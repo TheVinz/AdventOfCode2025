@@ -1,16 +1,42 @@
 debug_filename = 'debug.txt'
 input_filename = 'input.txt'
 
-DEBUG = 4277556
+DEBUG = 3263827
+
+def toNumber(digits):
+    res = []
+
+    for digit in digits:
+        if digit != ' ':
+            res.append(digit)
+    
+    if res==[]:
+        return None
+    else:
+        return int(''.join(res))
+    
 
 class Worksheet:
     def __init__(self, ops, *args):
         self._problems = []
-        for i in range(len(ops)):
-            tmp = []
-            for arg in args:
-                tmp.append(int(arg[i]))
-            self._problems.append((ops[i], tmp))
+        terms = []
+
+        for i in range(len(args[0])):
+            digits = [arg[i] for arg in args]
+            val = toNumber(digits)
+
+            if val is None:
+                temp = ops.pop(0), terms
+                self._problems.append(temp)
+                terms = []
+            else:
+                terms.append(val)
+        
+        temp = ops.pop(), terms
+        self._problems.append(temp)
+        
+
+
     
     @property
     def problems(self):
@@ -45,9 +71,9 @@ def readInput(f):
     lines = []
     
     for line in f:
-        lines.append(line.strip().split())
+        lines.append(line.replace('\n', ''))
 
-    res = Worksheet(lines[-1], *lines[:-1])
+    res = Worksheet(lines[-1].strip().split(), *lines[:-1])
 
     return res
 
